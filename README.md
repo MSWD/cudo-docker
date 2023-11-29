@@ -5,7 +5,7 @@ This image supports Nvidia devices.
 ## Build
 
 ```bash
-docker build -t cudominer .
+docker build -t cudominer:systemd-latest .
 ```
 
 ## Run
