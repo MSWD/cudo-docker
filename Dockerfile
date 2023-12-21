@@ -1,4 +1,4 @@
-FROM nvidia/cuda:12.3.0-devel-ubuntu22.04
+FROM nvidia/cuda:12.2.0-devel-ubuntu22.04
 
 # Never prompts the user for choices on installation/configuration of packages
 ENV DEBIAN_FRONTEND noninteractive
@@ -11,7 +11,7 @@ RUN \
     apt-get install -y wget dnsutils systemd systemd-sysv libpci3 libpci-dev libx11-dev \
                        libxext-dev libxxf86vm-dev libnuma-dev libnvidia-ml-dev less vim \
                        python3-pip iputils-ping && \
-    python -m pip install nvitop
+    python3 -m pip install nvitop
 
 WORKDIR /tmp
 
