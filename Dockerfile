@@ -1,4 +1,4 @@
-FROM nvidia/cuda:12.2.0-devel-ubuntu22.04
+FROM nvidia/cuda:12.3.0-devel-ubuntu22.04
 
 # Never prompts the user for choices on installation/configuration of packages
 ENV DEBIAN_FRONTEND noninteractive
@@ -10,7 +10,7 @@ RUN \
     apt-get update && \
     apt-get install -y wget dnsutils systemd systemd-sysv libpci3 libpci-dev libx11-dev \
                        libxext-dev libxxf86vm-dev libnuma-dev libnvidia-ml-dev less vim \
-                       python3-pip iputils-ping && \
+                       python3-pip iputils-ping acl && \
     python3 -m pip install nvitop
 
 WORKDIR /tmp
@@ -19,7 +19,10 @@ ADD ./cudominer-install.sh .
 
 RUN \
     ORG=athlonia-bogey bash /tmp/cudominer-install.sh --install-mode=headless --install-cli --update-channel=stable --quiet && \
-    systemctl enable cudo-miner.service
+    systemctl enable cudo-miner.service && \
+    mkdir /var/lib/cudo-miner && \
+    chown -R gnats:root /var/lib/cudo-miner && \
+    setfacl -m u:gnats:rwx /var/lib
 
 ENV SOCKET_PATH=/var/lib/cudo-miner.sock
 ENV REBOOT_IDLE_TIME=30
@@ -27,6 +30,8 @@ ENV STORE_PATH=/var/lib/cudo-miner/store
 ENV REGISTRY_PATH=/var/lib/cudo-miner/registry
 ENV BIN_PATH=/usr/local/cudo-miner/bin
 ENV RUNTIME_PATH=/usr/local/cudo-miner/runtime
+
+USER gnats
 
 WORKDIR /usr/local/cudo-miner
 
